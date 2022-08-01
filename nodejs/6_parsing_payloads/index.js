@@ -1,42 +1,49 @@
-// parsing payloads 
+// primary file 
 
 // dependancies 
 var http = require('http')
 var url = require('url')
-var stringDecoder = require('string_decoder').stringDecoder
+var StringDecoder = require('string_decoder').StringDecoder
 
-// create a server
-var server = http.createServer(function(req, res){
-    // parse path 
+// server should respond to all the requests using a string
+var server = http.createServer(function(req,res){
+    // get the path 
     var parsedUrl = url.parse(req.url, true)
 
-    // extract path
+    // extract the pathname
     var path = parsedUrl.pathname
 
-    // trim url 
-    var trimmedPath = path.replace(/^\/+|\/+$/g,'')
+    // trim the path using regex
+    var trimmed_path = path.replace(/^\/+|\/+$/g,'')
 
-    // parse method 
-    var method = req.method.toLocaleLowerCase()
+    // http method
+    var method = req.method
 
-    // parse headers 
-    var header = req.headers
+    // headers
+    var headers = req.headers
 
-    // parse query string 
-    var queryString = parsedUrl.query
+    // query string
+    var query = parsedUrl.query
 
-    // parse the payload
-    var decoder = new stringDecoder('utf-8')
-    var buffer = ''
-    req.on('data', function(data){
+    // parse payload
+    var decoder = new StringDecoder('utf-8')
+
+    var buffer = '' 
+
+    // write data stream into the buffer
+    req.on("data", function(data){
         buffer += decoder.write(data)
     })
 
-    req.on('end', function(){
-        buffer +=decoder.end()
-
-        res.end('hello world\n')
-        
+    req.on("end", function(){
+        buffer = decoder.end()
+        // send the responce
+        res.end('Hello world\n')
+        console.log("Header : ", headers, " Path : ", trimmed_path, " Method : ", method , " Query : ", query ," Buffer : ", buffer)
     })
 
+})
+
+server.listen(3000, function(){
+    console.log("Server listening on the port number : ", 3000)
 })
