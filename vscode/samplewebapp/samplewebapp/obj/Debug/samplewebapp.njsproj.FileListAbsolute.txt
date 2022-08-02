@@ -1,3 +1,0 @@
-D:\Academic\NodeJs\nodejs-basics\vscode\samplewebapp\samplewebapp\obj\Debug\samplewebapp.njsproj.AssemblyReference.cache
-D:\Academic\NodeJs\nodejs-basics\vscode\samplewebapp\samplewebapp\obj\Debug\samplewebapp.njsproj.CoreCompileInputs.cache
-D:\Academic\NodeJs\nodejs-basics\vscode\samplewebapp\samplewebapp\bin\Microsoft.NodejsTools.WebRole.dll
