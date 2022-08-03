@@ -30,17 +30,60 @@ http.createServer((req,res)=>{
     })
 
     req.on('end', ()=>{
+
         buffer += decoder.end()
-        res.setHeader('content-type','text/html')
-        res.write('<html>')
-        res.write('<head><title>Server Responce</title></head>')
-        res.write('<body><h1>This is the server responce</h1></body>')
-        res.write('</html>')
-        res.end()
-        console.log('Headers : ', headers, ' Method : ', method, ' Query : ', query, ' Path : ', trimmed_path, ' Payload : ', buffer)
+        // var chosenHandler = (typeof(routes[trimmed_path]) != undefined) ? routes[trimmed_path] : handlers.notFound
+        var chosenHandler = routes[trimmed_path] || handlers.notFound;
+        // creating the data model 
+        var data = {
+            'Headers' : headers,
+            'Method' : method,
+            'Payload' : buffer,
+            'Query' : query
+        }
+
+        chosenHandler(data, (statuscode, payload)=>{
+            statuscode = typeof(statuscode) == 'number' ? statuscode : 200
+
+            payload = typeof(payload) == 'object' ? payload : {}
+
+            var payloadString = JSON.stringify(payload)
+
+            res.writeHead(statuscode)
+            res.end(payloadString)
+            console.log('Headers : ', headers, ' Method : ', method, ' Query : ', query, ' Path : ', trimmed_path, ' Payload : ', buffer)
+        })
+
     })
     
 
 }).listen(3000, ()=>{
     console.log('Server is listening to port : ', 3000)
 })
+
+// define handlers
+var handlers = {}
+
+// define routes 
+
+// message route
+handlers.message = (data, callback) =>{
+    callback(406, {'name':'Hashan', 'message': 'This is the message'})
+}
+
+// about us route
+handlers.aboutus = (data, callback)=>{
+    callback(406, {'aboutus' : 'This is the about message'})
+}
+
+// not found route
+handlers.notFound = (data, callback)=>{
+    callback(404, {'message': 'Page not found'});
+}
+
+// define the routers with corresponding handler
+var routes = {
+    'message' : handlers.message,
+    'aboutus' : handlers.aboutus,
+    'NotFound' : handlers.notFound
+}
