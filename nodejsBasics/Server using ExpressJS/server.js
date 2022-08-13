@@ -7,7 +7,7 @@ const notFoundRoute = require('./routes/notFound')
 var app = express()
 app.use(bodyParser.urlencoded({extended:false}))
 
-app.use(adminRoutes)
+app.use('/admin',adminRoutes)
 app.use(shopRoutes)
 app.use(notFoundRoute)
 
